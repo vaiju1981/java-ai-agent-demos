@@ -196,3 +196,28 @@ AGENT_MODEL=gemma4:31b-cloud ./gradlew run -PmainClass=dev.vaijanath.aiagent.dem
 ```
 
 `EvalHarnessDemoTest` exercises the harness with a deterministic agent (3/3, 100%).
+
+## ObservabilityDemo — per-model token accounting + cost (no model)
+
+A `TokenAccountingObserver` attributes usage **per model** (a supervisor on a large model, workers on a
+small one), and a **bring-your-own** `Pricing` table turns tokens into dollars — no prices are bundled, and
+local models are free. Deterministic; wire `.observer(acct)` into any agent for live numbers.
+
+```bash
+./gradlew run -PmainClass=dev.vaijanath.aiagent.demos.observe.ObservabilityDemo
+```
+
+`ObservabilityDemoTest` checks the per-model breakdown and the cost math. For distributed tracing, add
+`OtelAgentObserver` (`agent-observability-otel`) or `MicrometerAgentObserver` (the Spring Boot starter).
+
+## MultimodalDemo — send an image to a vision model
+
+Attaches a generated bar-chart image to a user turn with `Message.user(text, media)` and sends it to a
+vision model via the `ModelPort` (multimodal is a model-level capability). The image is created in-process,
+so it's self-contained; point `AGENT_MODEL` at a vision model like `llava` to actually describe it.
+
+```bash
+AGENT_MODEL=llava ./gradlew run -PmainClass=dev.vaijanath.aiagent.demos.multimodal.MultimodalDemo
+```
+
+`MultimodalDemoTest` checks the turn carries one PNG image and the renderer emits a valid PNG.
