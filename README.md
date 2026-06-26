@@ -170,3 +170,29 @@ the oldest — so a long conversation never blows past the model's context windo
 
 It adds 25 messages and shows the window keep ~10 (system + recent). For *compression* instead of dropping,
 `SummarizingMemory` summarizes older turns with a model. See [CATALOG.md](CATALOG.md) for the full demo roadmap.
+
+## SkilledAgentDemo — skills as progressive disclosure
+
+A catalog of skills is registered; the right one is **selected per task**, and the equipped skill's
+instructions + tools steer the answer — the math task gets a "show your steps" style and the calculator
+tool, the translation task gets a "French only" style. Selection uses the deterministic
+`KeywordSkillSelector` (correct offline); swap in `LlmSkillSelector` to let the model choose.
+
+```bash
+AGENT_MODEL=gemma4:31b-cloud ./gradlew run -PmainClass=dev.vaijanath.aiagent.demos.skill.SkilledAgentDemo
+```
+
+`SkilledAgentDemoTest` proves the selector equips `math-tutor` for a math task and `french-translator`
+for a translation task.
+
+## EvalHarnessDemo — score an agent against a suite
+
+Run an agent against a suite of `EvalCase`s and print a pass-rate report — how you catch regressions in a
+tool-using agent. Set `AGENT_MODEL` so the agent can call the math tool and pass; with a stub it honestly
+scores 0/3.
+
+```bash
+AGENT_MODEL=gemma4:31b-cloud ./gradlew run -PmainClass=dev.vaijanath.aiagent.demos.eval.EvalHarnessDemo
+```
+
+`EvalHarnessDemoTest` exercises the harness with a deterministic agent (3/3, 100%).
