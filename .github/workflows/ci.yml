@@ -1,0 +1,37 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+# Cancel superseded runs on the same ref.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+# Least privilege: the build only needs to read the repo.
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: build & test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Set up JDK 21 (matches the library's Java 21 baseline)
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Set up Gradle (with caching + wrapper validation)
+        uses: gradle/actions/setup-gradle@v6
+        with:
+          validate-wrappers: true
+
+      # Compiles and runs the demo tests against the published io.github.vaiju1981:agent-*:0.4.0 artifacts.
+      - name: Build & test
+        run: ./gradlew build --no-daemon --stacktrace
