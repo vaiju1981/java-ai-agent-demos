@@ -34,8 +34,8 @@ demo here; 🟡 = touched by a broader demo (or shown in the main repo's `exampl
 | 2 | **Self-learning** — ReflectiveAgent + durable episodic recall | `SelfLearningDemo` | Ollama | **0.5.0** (JdbcEpisodicStore) |
 | 2 | **Skills** — acquire/select reusable skills | `SkilledAgentDemo` ✅ | Ollama | 0.4.0 |
 | 2 | **Eval** — score an agent against a suite | `EvalHarnessDemo` ✅ | Ollama | 0.4.0 |
-| 3 | **Observability** — token accounting + per-model cost; OTel/Micrometer | `ObservabilityDemo` | Ollama | 0.4.0 |
-| 3 | **Multimodal** — image → vision model | `MultimodalDemo` | Ollama vision (e.g. `llava`) | 0.4.0 |
+| 3 | **Observability** — token accounting + per-model cost; OTel/Micrometer | `ObservabilityDemo` ✅ | none | 0.4.0 |
+| 3 | **Multimodal** — image → vision model | `MultimodalDemo` ✅ | Ollama vision (e.g. `llava`) | 0.4.0 |
 | 4 | **MCP** — expose an MCP server's tools | `McpToolsDemo` | a local MCP server | 0.4.0 |
 | 4 | **Provider swap** — same agent on Claude/OpenAI/Ollama | `ProviderSwapDemo` | API key (or Ollama) | 0.4.0 |
 
