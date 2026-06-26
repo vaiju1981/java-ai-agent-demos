@@ -141,3 +141,32 @@ review that writes a persisted **financial plan** (`record_finding`).
 
 `AdvisoryToolsTest` proves the tools find the signal (the H2 savings decline, dining creep, the gym
 subscription, the anomalous trip, dining over budget).
+
+## RagKnowledgeBaseDemo — retrieval-augmented answers
+
+A small policy knowledge base embedded into an `InMemoryVectorStore`; `RetrievalAugmentedAgent` retrieves
+the top matches and weaves them into the prompt, so the model answers **from the corpus, not its memory**.
+The demo prints the retrieval step (the evidence) and then the grounded answer.
+
+Set `AGENT_MODEL` (chat) and `AGENT_EMBEDDING_MODEL` (e.g. `nomic-embed-text`) for a real, *semantic* run;
+with neither, it falls back to a deterministic keyword-hashing embedder so the wiring still runs offline.
+
+```bash
+AGENT_MODEL=gemma4:31b-cloud AGENT_EMBEDDING_MODEL=nomic-embed-text \
+  ./gradlew run -PmainClass=dev.vaijanath.aiagent.demos.rag.RagKnowledgeBaseDemo
+```
+
+`RagKnowledgeBaseDemoTest` proves the refund policy ranks first for a refund question. For durable corpora
+swap in `JdbcVectorStore` (`agent-store-jdbc`); for large-scale ANN, `PgVectorRetriever` (`agent-store-pgvector`).
+
+## MemoryStrategiesDemo — bounding a growing conversation (no model)
+
+`TokenWindowedMemory` keeps the system message plus the most recent turns that fit a token budget, dropping
+the oldest — so a long conversation never blows past the model's context window. Deterministic; needs no model.
+
+```bash
+./gradlew run -PmainClass=dev.vaijanath.aiagent.demos.memory.MemoryStrategiesDemo
+```
+
+It adds 25 messages and shows the window keep ~10 (system + recent). For *compression* instead of dropping,
+`SummarizingMemory` summarizes older turns with a model. See [CATALOG.md](CATALOG.md) for the full demo roadmap.
