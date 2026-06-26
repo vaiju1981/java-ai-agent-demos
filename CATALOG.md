@@ -1,44 +1,29 @@
-# Demo catalog — capability coverage
+# Demo catalog — real applications
 
-A map of every `java-ai-agent` capability to a demo, so the showcase is exhaustive. ✅ = a dedicated
-demo here; 🟡 = touched by a broader demo (or shown in the main repo's `examples/` / `production-reference`);
-⬜ = gap to build. "Released" notes whether it needs an unpublished version.
+**The bar for this repo:** each demo is a deep, **real application** over a realistic domain (like
+`PersonalFinanceDemo` or `DataAnalystDemo`), weaving many capabilities together — not a single-feature
+skeleton. Focused, single-capability snippets live as **examples** in the main repo instead:
+[`java-ai-agent/examples`](https://github.com/vaiju1981/java-ai-agent/tree/main/examples) (RAG, memory
+windowing, skills, eval, token cost, multimodal, …).
 
-## Covered
+## Real applications here
 
-| Capability | Demo | |
+| Demo | Domain | Capabilities exercised |
 |---|---|---|
-| Governed runtime, deny-by-default tools, audit, tenant isolation | `GovernedSupportDeskDemo` | ✅ |
-| Durable conversation store (JDBC), restart survival | `GovernedSupportDeskDemo` | ✅ |
-| Guardrails (crisis block, PII scrub) | `GovernedSupportDeskDemo` | ✅ |
-| Token budget (graceful stop) | `GovernedSupportDeskDemo` | ✅ |
-| `@AgentTool` methods + JSON-schema validation | `DataAnalystDemo`, `PersonalFinanceDemo` | ✅ |
-| Effectful tools + graduated authorization + human-in-the-loop | `FraudInvestigationDemo` | ✅ |
-| Turn idempotency | `FraudInvestigationDemo` | ✅ |
-| Multi-agent: GraphAgent (conditional edge/cycle) | `MultiAgentNewsroomDemo` | ✅ |
-| A2A (server + remote agent) | `MultiAgentNewsroomDemo` | ✅ |
-| Agents-as-tools | `MultiAgentNewsroomDemo` | ✅ |
-| Group chat (speaker selection) | `MultiAgentNewsroomDemo` | ✅ |
-| `@AiService` typed facade | `MultiAgentNewsroomDemo` | 🟡 |
-| Deep agent / DAG planner | `DagResumeDemo` | ✅ |
-| Checkpoint crash-resume | `DagResumeDemo` | ✅ |
-| Spring Boot starter, SSE streaming over HTTP | main repo `production-reference` | 🟡 |
+| `GovernedSupportDeskDemo` | support desk (scripted) | governed runtime, durable store, guardrails, budget, tenant isolation, audit |
+| `MultiAgentNewsroomDemo` | editorial pipeline | GraphAgent, A2A, agents-as-tools, group chat, `@AiService` |
+| `DataAnalystDemo` | e-commerce warehouse | `@AgentTool` EDA toolkit, SQL, JSON-schema validation, structured report |
+| `FraudInvestigationDemo` | payments fraud | effectful tools, graduated authorization, human-in-the-loop, idempotency |
+| `PersonalFinanceDemo` | personal finances | advisory toolkit, anomaly/subscription detection, persisted plan |
 
-## Gaps to build (batches)
+## Real-app roadmap (each weaves several capabilities)
 
-| # | Capability | Planned demo | Runs on | Released |
-|---|---|---|---|---|
-| 1 | **RAG** — ingest, chunk, embed, retrieve, ground | `RagKnowledgeBaseDemo` | Ollama | 0.4.0 |
-| 1 | **Structured output** — typed final result | `StructuredOutputDemo` | Ollama | 0.4.0 |
-| 1 | **Smarter memory** — token-windowed + summarizing | `MemoryStrategiesDemo` | Ollama | 0.4.0 |
-| 2 | **Self-learning** — ReflectiveAgent + durable episodic recall | `SelfLearningDemo` | Ollama | **0.5.0** (JdbcEpisodicStore) |
-| 2 | **Skills** — acquire/select reusable skills | `SkilledAgentDemo` ✅ | Ollama | 0.4.0 |
-| 2 | **Eval** — score an agent against a suite | `EvalHarnessDemo` ✅ | Ollama | 0.4.0 |
-| 3 | **Observability** — token accounting + per-model cost; OTel/Micrometer | `ObservabilityDemo` ✅ | none | 0.4.0 |
-| 3 | **Multimodal** — image → vision model | `MultimodalDemo` ✅ | Ollama vision (e.g. `llava`) | 0.4.0 |
-| 4 | **MCP** — expose an MCP server's tools | `McpToolsDemo` | a local MCP server | 0.4.0 |
-| 4 | **Provider swap** — same agent on Claude/OpenAI/Ollama | `ProviderSwapDemo` | API key (or Ollama) | 0.4.0 |
+| App | Showcases | Status |
+|---|---|---|
+| **Support Copilot** | RAG over a product KB + governed effectful tools (ticket/refund) + guardrails + memory + **self-learning** from past resolutions (`JdbcEpisodicStore`) | planned — needs **0.5.0** on Central |
+| **Research Assistant** | deep/DAG planning + concurrent sub-agents + RAG + checkpoint resume → a cited briefing | planned |
+| **Coding/DevOps assistant** | RAG over code+docs, tools to run checks, structured findings | idea |
 
-Order: batch 1 (RAG, structured, memory) → batch 2 (self-learning once 0.5.0 is published, skills, eval)
-→ batch 3 (observability, multimodal) → batch 4 (MCP, provider swap). Each batch is its own PR; every demo
-runs against a local Ollama model unless noted.
+Order: **Support Copilot** first (it houses the self-learning showcase) once 0.5.0 publishes, then
+Research Assistant. Each ships as its own PR with deterministic tests for its domain logic (as the
+current real apps do).
