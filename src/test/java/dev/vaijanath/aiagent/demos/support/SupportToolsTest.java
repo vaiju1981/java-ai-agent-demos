@@ -21,11 +21,12 @@ import dev.vaijanath.aiagent.tool.ToolApprovers;
 import dev.vaijanath.aiagent.tool.ToolCallContext;
 import dev.vaijanath.aiagent.tool.ToolInvocation;
 import dev.vaijanath.aiagent.tool.ToolResult;
-import java.io.File;
+import java.nio.file.Path;
 import java.time.Duration;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 /**
  * Proves the Support Copilot's domain logic end to end without a model: the read tool reports refund
@@ -34,6 +35,9 @@ import org.junit.jupiter.api.Test;
  * the episodic store recalls the relevant past lesson.
  */
 class SupportToolsTest {
+
+    @TempDir
+    private Path tmpDir;
 
     private OrderBook orders;
     private SupportActions actions;
@@ -147,11 +151,10 @@ class SupportToolsTest {
     }
 
     @Test
-    void episodicMemoryRecallsTheRelevantLesson() throws Exception {
-        File db = File.createTempFile("support-ep-test", ".db");
-        db.deleteOnExit();
+    void episodicMemoryRecallsTheRelevantLesson() {
+        Path db = tmpDir.resolve("episodes.db");
         JdbcEpisodicStore episodes =
-                JdbcEpisodicStore.fromJdbcUrl("jdbc:sqlite:" + db.getAbsolutePath(), SupportKb.embedder(new StubModelPort()));
+                JdbcEpisodicStore.fromJdbcUrl("jdbc:sqlite:" + db, SupportKb.embedder(new StubModelPort()));
         episodes.record(new Episode(SupportKb.TENANT,
                 "Customer wanted a cash refund for a rain jacket that lost waterproofing after water and accidental damage",
                 "Declined the refund, offered a goodwill code, opened a ticket.",
