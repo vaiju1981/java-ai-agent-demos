@@ -142,82 +142,9 @@ review that writes a persisted **financial plan** (`record_finding`).
 `AdvisoryToolsTest` proves the tools find the signal (the H2 savings decline, dining creep, the gym
 subscription, the anomalous trip, dining over budget).
 
-## RagKnowledgeBaseDemo — retrieval-augmented answers
+---
 
-A small policy knowledge base embedded into an `InMemoryVectorStore`; `RetrievalAugmentedAgent` retrieves
-the top matches and weaves them into the prompt, so the model answers **from the corpus, not its memory**.
-The demo prints the retrieval step (the evidence) and then the grounded answer.
-
-Set `AGENT_MODEL` (chat) and `AGENT_EMBEDDING_MODEL` (e.g. `nomic-embed-text`) for a real, *semantic* run;
-with neither, it falls back to a deterministic keyword-hashing embedder so the wiring still runs offline.
-
-```bash
-AGENT_MODEL=gemma4:31b-cloud AGENT_EMBEDDING_MODEL=nomic-embed-text \
-  ./gradlew run -PmainClass=dev.vaijanath.aiagent.demos.rag.RagKnowledgeBaseDemo
-```
-
-`RagKnowledgeBaseDemoTest` proves the refund policy ranks first for a refund question. For durable corpora
-swap in `JdbcVectorStore` (`agent-store-jdbc`); for large-scale ANN, `PgVectorRetriever` (`agent-store-pgvector`).
-
-## MemoryStrategiesDemo — bounding a growing conversation (no model)
-
-`TokenWindowedMemory` keeps the system message plus the most recent turns that fit a token budget, dropping
-the oldest — so a long conversation never blows past the model's context window. Deterministic; needs no model.
-
-```bash
-./gradlew run -PmainClass=dev.vaijanath.aiagent.demos.memory.MemoryStrategiesDemo
-```
-
-It adds 25 messages and shows the window keep ~10 (system + recent). For *compression* instead of dropping,
-`SummarizingMemory` summarizes older turns with a model. See [CATALOG.md](CATALOG.md) for the full demo roadmap.
-
-## SkilledAgentDemo — skills as progressive disclosure
-
-A catalog of skills is registered; the right one is **selected per task**, and the equipped skill's
-instructions + tools steer the answer — the math task gets a "show your steps" style and the calculator
-tool, the translation task gets a "French only" style. Selection uses the deterministic
-`KeywordSkillSelector` (correct offline); swap in `LlmSkillSelector` to let the model choose.
-
-```bash
-AGENT_MODEL=gemma4:31b-cloud ./gradlew run -PmainClass=dev.vaijanath.aiagent.demos.skill.SkilledAgentDemo
-```
-
-`SkilledAgentDemoTest` proves the selector equips `math-tutor` for a math task and `french-translator`
-for a translation task.
-
-## EvalHarnessDemo — score an agent against a suite
-
-Run an agent against a suite of `EvalCase`s and print a pass-rate report — how you catch regressions in a
-tool-using agent. Set `AGENT_MODEL` so the agent can call the math tool and pass; with a stub it honestly
-scores 0/3.
-
-```bash
-AGENT_MODEL=gemma4:31b-cloud ./gradlew run -PmainClass=dev.vaijanath.aiagent.demos.eval.EvalHarnessDemo
-```
-
-`EvalHarnessDemoTest` exercises the harness with a deterministic agent (3/3, 100%).
-
-## ObservabilityDemo — per-model token accounting + cost (no model)
-
-A `TokenAccountingObserver` attributes usage **per model** (a supervisor on a large model, workers on a
-small one), and a **bring-your-own** `Pricing` table turns tokens into dollars — no prices are bundled, and
-local models are free. Deterministic; wire `.observer(acct)` into any agent for live numbers.
-
-```bash
-./gradlew run -PmainClass=dev.vaijanath.aiagent.demos.observe.ObservabilityDemo
-```
-
-`ObservabilityDemoTest` checks the per-model breakdown and the cost math. For distributed tracing, add
-`OtelAgentObserver` (`agent-observability-otel`) or `MicrometerAgentObserver` (the Spring Boot starter).
-
-## MultimodalDemo — send an image to a vision model
-
-Attaches a generated bar-chart image to a user turn with `Message.user(text, media)` and sends it to a
-vision model via the `ModelPort` (multimodal is a model-level capability). The image is created in-process,
-so it's self-contained; point `AGENT_MODEL` at a vision model like `llava` to actually describe it.
-
-```bash
-AGENT_MODEL=llava ./gradlew run -PmainClass=dev.vaijanath.aiagent.demos.multimodal.MultimodalDemo
-```
-
-`MultimodalDemoTest` checks the turn carries one PNG image and the renderer emits a valid PNG.
+**Looking for focused, single-capability snippets** (RAG, memory windowing, skills, eval, token cost,
+multimodal)? Those live as **examples** in the main repo —
+[`java-ai-agent/examples`](https://github.com/vaiju1981/java-ai-agent/tree/main/examples). The demos here
+are deep, real applications; [CATALOG.md](CATALOG.md) tracks coverage and the real-app roadmap.
