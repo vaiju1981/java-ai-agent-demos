@@ -32,8 +32,8 @@ demo here; 🟡 = touched by a broader demo (or shown in the main repo's `exampl
 | 1 | **Structured output** — typed final result | `StructuredOutputDemo` | Ollama | 0.4.0 |
 | 1 | **Smarter memory** — token-windowed + summarizing | `MemoryStrategiesDemo` | Ollama | 0.4.0 |
 | 2 | **Self-learning** — ReflectiveAgent + durable episodic recall | `SelfLearningDemo` | Ollama | **0.5.0** (JdbcEpisodicStore) |
-| 2 | **Skills** — acquire/select reusable skills | `SkilledAgentDemo` | Ollama | 0.4.0 |
-| 2 | **Eval** — score an agent against a suite | `EvalHarnessDemo` | Ollama | 0.4.0 |
+| 2 | **Skills** — acquire/select reusable skills | `SkilledAgentDemo` ✅ | Ollama | 0.4.0 |
+| 2 | **Eval** — score an agent against a suite | `EvalHarnessDemo` ✅ | Ollama | 0.4.0 |
 | 3 | **Observability** — token accounting + per-model cost; OTel/Micrometer | `ObservabilityDemo` | Ollama | 0.4.0 |
 | 3 | **Multimodal** — image → vision model | `MultimodalDemo` | Ollama vision (e.g. `llava`) | 0.4.0 |
 | 4 | **MCP** — expose an MCP server's tools | `McpToolsDemo` | a local MCP server | 0.4.0 |
