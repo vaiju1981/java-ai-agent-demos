@@ -20,7 +20,9 @@ import dev.vaijanath.aiagent.rag.RetrievedChunk;
 import dev.vaijanath.aiagent.store.jdbc.JdbcEpisodicStore;
 import dev.vaijanath.aiagent.tool.Tool;
 import dev.vaijanath.aiagent.tool.ToolApprovers;
-import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.Duration;
 import java.util.List;
 
@@ -190,13 +192,17 @@ public final class SupportCopilotDemo {
         System.out.println();
     }
 
-    /** A durable, SQLite-backed episodic store in a temp file (self-creates its schema). */
+    /** A durable, SQLite-backed episodic store (self-creates its schema). */
     private static JdbcEpisodicStore openEpisodicStore(Embedder embedder) {
         try {
-            File db = File.createTempFile("support-episodes", ".db");
-            db.deleteOnExit();
-            return JdbcEpisodicStore.fromJdbcUrl("jdbc:sqlite:" + db.getAbsolutePath(), embedder);
-        } catch (Exception e) {
+            // A real on-disk SQLite file (the 0.5.0 durable store), kept under the gitignored build
+            // dir rather than the shared system temp dir (which Sonar flags as world-writable, S5443).
+            Path dir = Files.createDirectories(Path.of("build", "support-copilot"));
+            Path db = dir.resolve("episodes.db");
+            Files.deleteIfExists(db); // start each run from a clean store
+            db.toFile().deleteOnExit();
+            return JdbcEpisodicStore.fromJdbcUrl("jdbc:sqlite:" + db, embedder);
+        } catch (IOException e) {
             throw new IllegalStateException("failed to open episodic store", e);
         }
     }
