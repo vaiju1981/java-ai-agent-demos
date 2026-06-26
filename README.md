@@ -3,7 +3,7 @@
 A small set of **deep, production-shaped** applications built on
 [**java-ai-agent**](https://github.com/vaiju1981/java-ai-agent) — the proof that real work runs on the
 library, not a gallery of skeletons. This is a standalone project that consumes the **published**
-`io.github.vaiju1981:agent-*` artifacts (currently **0.4.0**, pinned via the `agent-bom`); clone it and
+`io.github.vaiju1981:agent-*` artifacts (currently **0.5.0**, pinned via the `agent-bom`); clone it and
 run. Each demo needs a tool-capable model:
 
 ```bash
@@ -141,6 +141,38 @@ review that writes a persisted **financial plan** (`record_finding`).
 
 `AdvisoryToolsTest` proves the tools find the signal (the H2 savings decline, dining creep, the gym
 subscription, the anomalous trip, dining over budget).
+
+## SupportCopilotDemo — RAG + governed actions + self-learning
+
+The demo that weaves the **whole library** into one believable application: the customer-support
+copilot for the fictional outdoor-gear store *Northwind Outfitters*. One agent, five capabilities:
+
+- **Guardrails** — every inbound message is **PII-scrubbed** and **screened for prompt injection**
+  before it reaches the model;
+- **RAG** — answers are **grounded in a product/policy knowledge base** (`SupportKb` → an
+  `InMemoryVectorStore`) via `RetrievalAugmentedAgent`, not invented;
+- **Conversation memory** — a multi-turn chat keeps context in a session, so "how do I send *it*
+  back?" is understood;
+- **Governed effectful tools** — `lookup_order` (read), `create_ticket` (effectful, allow-listed) and
+  `issue_refund` (effectful, **denied** without authorization). Authorization is **graduated**: the
+  copilot opens tickets autonomously, but a refund is **escalated to a human** — looks up the order,
+  finds `issue_refund` denied by policy, and opens a ticket instead, all audited and idempotent;
+- **Self-learning** — a durable `JdbcEpisodicStore` (SQLite) of **past resolutions**; a
+  `ReflectiveAgent` recalls the relevant lesson before answering (a water-damage claim recalls "not
+  covered by warranty — offer a goodwill code, don't refund") and records new ones, so it improves
+  across runs.
+
+```bash
+# deterministic parts (guardrails, retrieval, recall) run offline:
+./gradlew run -PmainClass=dev.vaijanath.aiagent.demos.support.SupportCopilotDemo
+# full agentic run (tools + answers); add the embedder for true semantic retrieval:
+AGENT_MODEL=kimi-k2.6:cloud AGENT_EMBEDDING_MODEL=nomic-embed-text-v2-moe:latest \
+  ./gradlew run -PmainClass=dev.vaijanath.aiagent.demos.support.SupportCopilotDemo
+```
+
+`SupportToolsTest` proves it deterministically: the refund tool enforces the 30-day window and is
+idempotent, the runtime allows the ticket while **denying the refund**, the KB grounds the refund
+question in the right article, and the episodic store recalls the relevant past lesson.
 
 ---
 
