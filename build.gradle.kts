@@ -10,7 +10,7 @@ repositories {
 
 dependencies {
     // One BOM pins every java-ai-agent module to the same release.
-    implementation(platform("io.github.vaiju1981:agent-bom:0.4.0"))
+    implementation(platform("io.github.vaiju1981:agent-bom:0.5.0"))
     implementation("io.github.vaiju1981:agent-core")
     implementation("io.github.vaiju1981:agent-langchain4j")
     // The multi-agent showcase reaches one specialist over Agent-to-Agent (HTTP).

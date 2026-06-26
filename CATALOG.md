@@ -10,6 +10,7 @@ windowing, skills, eval, token cost, multimodal, …).
 
 | Demo | Domain | Capabilities exercised |
 |---|---|---|
+| `SupportCopilotDemo` | support copilot (Northwind) | RAG over a product KB, governed effectful tools (ticket/refund), graduated authorization, guardrails, conversation memory, **self-learning** via `JdbcEpisodicStore` |
 | `GovernedSupportDeskDemo` | support desk (scripted) | governed runtime, durable store, guardrails, budget, tenant isolation, audit |
 | `MultiAgentNewsroomDemo` | editorial pipeline | GraphAgent, A2A, agents-as-tools, group chat, `@AiService` |
 | `DataAnalystDemo` | e-commerce warehouse | `@AgentTool` EDA toolkit, SQL, JSON-schema validation, structured report |
@@ -20,10 +21,9 @@ windowing, skills, eval, token cost, multimodal, …).
 
 | App | Showcases | Status |
 |---|---|---|
-| **Support Copilot** | RAG over a product KB + governed effectful tools (ticket/refund) + guardrails + memory + **self-learning** from past resolutions (`JdbcEpisodicStore`) | planned — needs **0.5.0** on Central |
 | **Research Assistant** | deep/DAG planning + concurrent sub-agents + RAG + checkpoint resume → a cited briefing | planned |
 | **Coding/DevOps assistant** | RAG over code+docs, tools to run checks, structured findings | idea |
 
-Order: **Support Copilot** first (it houses the self-learning showcase) once 0.5.0 publishes, then
-Research Assistant. Each ships as its own PR with deterministic tests for its domain logic (as the
-current real apps do).
+**Support Copilot** shipped as `SupportCopilotDemo` (RAG + governed effectful tools + guardrails +
+memory + self-learning via `JdbcEpisodicStore`). Next: **Research Assistant**. Each ships as its own
+PR with deterministic tests for its domain logic (as the current real apps do).
